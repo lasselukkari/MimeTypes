@@ -50,7 +50,7 @@ int MimeTypes::strcmpi(const char *s1, const char *s2) {
   for (i = 0; s1[i] && s2[i]; ++i) {
     if (s1[i] == s2[i] || (s1[i] ^ 32) == s2[i]) {
       continue;
-    } {
+    } else {
       break;
     }
   }
