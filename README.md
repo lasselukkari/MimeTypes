@@ -1,5 +1,5 @@
 # MimeTypes
-C++ content-type utility class. Mainly developed for ESP32, ESP8266 and other Arduino compatible boards.
+C++ content-type utility class.
 
 ## API
 ### static const char* getType(const char * path)
