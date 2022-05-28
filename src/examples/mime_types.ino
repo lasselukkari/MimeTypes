@@ -1,11 +1,20 @@
+#include <iostream>
+#include <string>
+#include <thread>
 
-#include "MimeTypes.h"
+#include <mime-types/mime_mapper.hpp>
 
-void setup() {
-  Serial.begin(115200);
+#include "serial.hpp"
+
+using namespace mime_types;
+
+void inline delay(std::size_t ms) {
+  std::this_thread::sleep_for(std::chrono::milliseconds(ms));
 }
 
-void loop() {
+void inline setup() { Serial.begin(115200); }
+
+void inline loop() {
   Serial.println();
   Serial.println("Testing getType()");
   Serial.print("Empty string: ");
@@ -30,7 +39,6 @@ void loop() {
   Serial.println(MimeTypes::getType("/bin/binary.BiN"));
   Serial.println();
 
-
   Serial.println("Testing getExtension()");
   Serial.print("Empty string: ");
   Serial.println(MimeTypes::getExtension(""));
@@ -41,13 +49,13 @@ void loop() {
   Serial.println(MimeTypes::getExtension("application/pdf"));
 
   Serial.print("All of text/plain: ");
-  const char * type;
-  int i = 0;
-  do  {
+  std::string type;
+  std::size_t i = 0;
+  do {
     type = MimeTypes::getExtension("text/plain", i++);
     Serial.print(type);
     Serial.print(" ");
-  } while (type != NULL);
+  } while (type != "");
   Serial.println();
 
   delay(5000);
