@@ -1,8 +1,6 @@
 #include <iostream>
 #include <string>
 
-#include <mime-types/mime_mapper.hpp>
-
 #include "mime_types.ino"
 
 using namespace std;

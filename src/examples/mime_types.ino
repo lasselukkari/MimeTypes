@@ -18,41 +18,41 @@ void inline loop() {
   Serial.println();
   Serial.println("Testing getType()");
   Serial.print("Empty string: ");
-  Serial.println(MimeTypes::getType(""));
+  Serial.println(get_type(""));
 
   Serial.print("Just dot: ");
-  Serial.println(MimeTypes::getType("."));
+  Serial.println(get_type("."));
 
   Serial.print("Dot as the last char: ");
-  Serial.println(MimeTypes::getType("txt."));
+  Serial.println(get_type("txt."));
 
   Serial.print("No dot in extension: ");
-  Serial.println(MimeTypes::getType("pdf"));
+  Serial.println(get_type("pdf"));
 
   Serial.print("Dot in extension: ");
-  Serial.println(MimeTypes::getType(".txt"));
+  Serial.println(get_type(".txt"));
 
   Serial.print("Full path: ");
-  Serial.println(MimeTypes::getType("/images/image.png"));
+  Serial.println(get_type("/images/image.png"));
 
   Serial.print("Mixed case: ");
-  Serial.println(MimeTypes::getType("/bin/binary.BiN"));
+  Serial.println(get_type("/bin/binary.BiN"));
   Serial.println();
 
   Serial.println("Testing getExtension()");
   Serial.print("Empty string: ");
-  Serial.println(MimeTypes::getExtension(""));
+  Serial.println(get_extension(""));
   Serial.print("Not found: ");
-  Serial.println(MimeTypes::getExtension("not/found"));
+  Serial.println(get_extension("not/found"));
 
   Serial.print("First of application/pdf: ");
-  Serial.println(MimeTypes::getExtension("application/pdf"));
+  Serial.println(get_extension("application/pdf"));
 
   Serial.print("All of text/plain: ");
   std::string type;
   std::size_t i = 0;
   do {
-    type = MimeTypes::getExtension("text/plain", i++);
+    type = get_extension("text/plain", i++);
     Serial.print(type);
     Serial.print(" ");
   } while (type != "");

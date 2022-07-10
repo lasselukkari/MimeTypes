@@ -1,5 +1,13 @@
 cmake_minimum_required(VERSION 3.1)
 
+if(POLICY CMP0074)
+    cmake_policy(SET CMP0074 NEW)
+endif()
+
+if(POLICY CMP0058)
+    cmake_policy(SET CMP0058 NEW)
+endif()
+
 set(project_name mime_types)
 
 project(${project_name} C CXX)

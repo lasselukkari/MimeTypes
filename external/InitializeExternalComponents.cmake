@@ -4,6 +4,8 @@ if(UNIX)
     find_package(DL REQUIRED)
 endif()
 
+set(FETCHCONTENT_UPDATES_DISCONNECTED ON CACHE STRING "FETCHCONTENT_UPDATES_DISCONNECTED" FORCE)
+
 include(FetchContent)
 
 # boost-cmake
@@ -12,15 +14,16 @@ if(WIN32)
     set(Boost_USE_STATIC_RUNTIME ON CACHE STRING "Boost_USE_STATIC_RUNTIME" FORCE)
 endif()
 
-find_package(Boost 1.65.1 REQUIRED COMPONENTS thread log log_setup system program_options filesystem coroutine locale regex unit_test_framework serialization)
+find_package(Boost 1.65.1 COMPONENTS thread log log_setup system program_options filesystem coroutine locale regex unit_test_framework serialization)
 if(Boost_FOUND)
     message(STATUS "** Boost Include: ${Boost_INCLUDE_DIR}")
     message(STATUS "** Boost Libraries Directory: ${Boost_LIBRARY_DIRS}")
     message(STATUS "** Boost Libraries: ${Boost_LIBRARIES}")
     include_directories(${Boost_INCLUDE_DIRS})
+    add_compile_definitions("MIME_TYPES_USE_BOOST")
 else()
     if(WIN32)
-        message(FATAL_ERROR "Plase check your vcpkg settings or global environment variables for the boost library.")
+        message(WARNING "Plase check your vcpkg settings or global environment variables for the boost library.")
     else()
         FetchContent_Declare(boost_cmake
             GIT_REPOSITORY https://github.com/Orphis/boost-cmake.git
@@ -30,32 +33,9 @@ else()
         if(NOT boost_cmake_POPULATED)
             FetchContent_Populate(boost_cmake)
             add_subdirectory(${boost_cmake_SOURCE_DIR} ${boost_cmake_BINARY_DIR} EXCLUDE_FROM_ALL)
+            add_compile_definitions("MIME_TYPES_USE_BOOST")
         endif()
     endif()
-endif()
-
-
-# fmt
-FetchContent_Declare(fmt
-    GIT_REPOSITORY https://github.com/fmtlib/fmt.git
-    GIT_TAG ef7369ce900346f403472231b60662936b24e731)
-
-FetchContent_GetProperties(fmt)
-if(NOT fmt_POPULATED)
-    FetchContent_Populate(fmt)
-    add_subdirectory(${fmt_SOURCE_DIR} ${fmt_BINARY_DIR} EXCLUDE_FROM_ALL)
-endif()
-
-
-# fmt
-FetchContent_Declare(fmt
-    GIT_REPOSITORY https://github.com/fmtlib/fmt.git
-    GIT_TAG ef7369ce900346f403472231b60662936b24e731)
-
-FetchContent_GetProperties(fmt)
-if(NOT fmt_POPULATED)
-    FetchContent_Populate(fmt)
-    add_subdirectory(${fmt_SOURCE_DIR} ${fmt_BINARY_DIR} EXCLUDE_FROM_ALL)
 endif()
 
 
@@ -94,5 +74,5 @@ if(NOT mime_js_POPULATED)
   cmrc_add_resource_library(mime-types-lib-resources
     NAMESPACE mime_types::data::rc
     WHENCE ${mime_js_SOURCE_DIR}
-    "${mime_js_SOURCE_DIR}/types/standard.js")
+    "${mime_js_SOURCE_DIR}/types/standard.js" "${mime_js_SOURCE_DIR}/types/other.js")
 endif()

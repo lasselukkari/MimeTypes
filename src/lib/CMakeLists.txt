@@ -10,10 +10,11 @@ file(GLOB_RECURSE src
 )
 
 file(GLOB_RECURSE public_headers
-    ${CMAKE_CURRENT_LIST_DIR}/include/*.h
-    ${CMAKE_CURRENT_LIST_DIR}/include/*.hpp
+    ${CMAKE_CURRENT_LIST_DIR}/include/public/*.h
+    ${CMAKE_CURRENT_LIST_DIR}/include/public/*.hpp
 )
 
+# =================================================================
 add_library(mime-types-lib
     STATIC ${src}
 )
@@ -28,6 +29,22 @@ target_include_directories(mime-types-lib
 target_link_libraries(mime-types-lib
     PUBLIC ${Boost_LIBRARIES}
     PRIVATE mime-types-lib-resources
-    PUBLIC fmt::fmt
     PUBLIC nlohmann_json::nlohmann_json
 )
+
+if(Boost_FOUND)
+    target_link_libraries(mime-types-lib
+        PUBLIC ${Boost_LIBRARIES}
+    )
+
+    target_compile_definitions(mime-types-lib PUBLIC "MIME_TYPES_USE_BOOST")
+endif()
+
+# =================================================================
+add_library(mime-types-lib-header-only INTERFACE)
+add_library(mime_types::mime_types_header_only ALIAS mime-types-lib-header-only)
+
+target_compile_definitions(mime-types-lib-header-only INTERFACE MIME_TYPES_HEADER_ONLY=1)
+
+target_include_directories(mime-types-lib-header-only INTERFACE
+  $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include/public>)
