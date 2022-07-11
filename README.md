@@ -14,6 +14,10 @@ Add this project as a dependency to your exising CMake project using **FetchCont
 * This library will fetch the latest version of MIME data from [standard.js](https://github.com/broofa/mime/blob/main/types/standard.js) and [other.js](https://github.com/broofa/mime/blob/main/types/other.js) when executing **CMake Configure**.
 
 ```cmake
+set(FETCHCONTENT_UPDATES_DISCONNECTED ON CACHE STRING "FETCHCONTENT_UPDATES_DISCONNECTED" FORCE)
+
+include(FetchContent)
+
 # mime_types
 FetchContent_Declare(mime_types
   GIT_REPOSITORY https://github.com/lasselukkari/MimeTypes.git
