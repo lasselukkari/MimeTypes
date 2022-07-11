@@ -1,10 +1,6 @@
 name: CMake
 
-on:
-  push:
-    branches: ["*"]
-  pull_request:
-    branches: [master]
+on: [push, pull_request]
 
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
@@ -23,7 +19,7 @@ jobs:
 
       - name: Install dependencies
         # Install dependencies
-        run: sudo ${{github.workspace}}/utilities/bootstrap.sh
+        run: sudo bash ${{github.workspace}}/utilities/bootstrap.sh && mkdir -p ${{github.workspace}}/build
 
       - name: Configure CMake
         # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
