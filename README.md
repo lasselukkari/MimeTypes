@@ -16,8 +16,8 @@ Add this project as a dependency to your exising CMake project using **FetchCont
 ```cmake
 # mime_types
 FetchContent_Declare(mime_types
-  GIT_REPOSITORY https://github.com/ArthurSonzogni/nlohmann_json_cmake_fetchcontent
-  GIT_TAG v3.10.4)
+  GIT_REPOSITORY https://github.com/lasselukkari/MimeTypes.git
+  GIT_TAG master)
 
 FetchContent_GetProperties(mime_types)
 if(NOT mime_types_POPULATED)
