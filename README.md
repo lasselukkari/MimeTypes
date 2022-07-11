@@ -40,7 +40,7 @@ target_link_libraries(demo
 )
 ```
 
-## Using as a header-only library without CMake
+### Using as a header-only library without CMake
 
 Add **src/lib/include/public** to your **INCLUDE_DIR**, and define **MIME_TYPES_HEADER_ONLY=1** globally to enable simple mode.
 
