@@ -1,73 +1,8 @@
 #include "MimeTypes.h"
 
-const char* MimeTypes::getType(const char * extension)  {
-  const char *dot = strrchr(extension, '.');
-  if (dot) {
-    if ( dot != extension) {
-      extension = dot;
-    }
-
-    extension++;
-  }
-
-  int min = 0;
-  int max = (sizeof(types) / sizeof(*types) - 1);
-
-  while (min <= max) {
-    int i = (int)(((max + min) / 2) + 0.5);
-    int order = strcmpi(extension, types[i].fileExtension);
-
-    if (order == 0) {
-      return types[i].mimeType;
-    } else if (order > 0) {
-      min = i + 1;
-    } else {
-      max = i - 1;
-    }
-  }
-
-  return NULL;
-}
-
-const char* MimeTypes::getExtension(const char * type, int skip)  {
-  int length = (sizeof(types) / sizeof(*types));
-
-  for (int i = 0; i < length; i++) {
-    if (strcmpi(type, types[i].mimeType) == 0) {
-      if (skip-- <= 0) {
-        return types[i].fileExtension;
-      }
-    }
-  }
-
-  return NULL;
-}
-
-// https://www.geeksforgeeks.org/write-your-own-strcmp-which-ignores-cases/
-int MimeTypes::strcmpi(const char *s1, const char *s2) {
-  int i;
-
-  for (i = 0; s1[i] && s2[i]; ++i) {
-    if (s1[i] == s2[i] || (s1[i] ^ 32) == s2[i]) {
-      continue;
-    } else {
-      break;
-    }
-  }
-
-  if (s1[i] == s2[i]) {
-    return 0;
-  }
-
-  if ((s1[i] | 32) < (s2[i] | 32)) {
-    return -1;
-  }
-
-  return 1;
-}
-
 // Source: https://raw.githubusercontent.com/broofa/node-mime/master/types/standard.json
-MimeTypes::entry MimeTypes::types[347] =  {
+// Keep entries sorted by extension for getType's binary search.
+const MimeTypes::entry MimeTypes::types[] =  {
   {"*3gpp", "audio/3gpp"},
   {"*jpm", "video/jpm"},
   {"*mp3", "audio/mp3"},
@@ -416,3 +351,78 @@ MimeTypes::entry MimeTypes::types[347] =  {
   {"yml", "text/yaml"},
   {"zip", "application/zip"},
 };
+
+const char* MimeTypes::getType(const char * extension)  {
+  if (extension == NULL) {
+    return NULL;
+  }
+
+  const char *dot = strrchr(extension, '.');
+  if (dot) {
+    extension = dot + 1;
+  }
+
+  if (*extension == '*') {
+    return NULL;
+  }
+
+  int min = 0;
+  int max = (sizeof(types) / sizeof(*types) - 1);
+
+  while (min <= max) {
+    int i = min + (max - min) / 2;
+    int order = strcmpi(extension, types[i].fileExtension);
+
+    if (order == 0) {
+      return types[i].mimeType;
+    } else if (order > 0) {
+      min = i + 1;
+    } else {
+      max = i - 1;
+    }
+  }
+
+  return NULL;
+}
+
+const char* MimeTypes::getExtension(const char * type, int skip)  {
+  if (type == NULL) {
+    return NULL;
+  }
+
+  int length = (sizeof(types) / sizeof(*types));
+
+  for (int i = 0; i < length; i++) {
+    if (strcmpi(type, types[i].mimeType) == 0) {
+      if (skip <= 0) {
+        const char *extension = types[i].fileExtension;
+        return *extension == '*' ? extension + 1 : extension;
+      }
+      --skip;
+    }
+  }
+
+  return NULL;
+}
+
+int MimeTypes::strcmpi(const char *s1, const char *s2) {
+  for (;;) {
+    unsigned char c1 = static_cast<unsigned char>(*s1);
+    unsigned char c2 = static_cast<unsigned char>(*s2);
+
+    if (c1 >= 'A' && c1 <= 'Z') {
+      c1 += 'a' - 'A';
+    }
+    if (c2 >= 'A' && c2 <= 'Z') {
+      c2 += 'a' - 'A';
+    }
+    if (c1 != c2) {
+      return c1 < c2 ? -1 : 1;
+    }
+    if (c1 == '\0') {
+      return 0;
+    }
+    ++s1;
+    ++s2;
+  }
+}
